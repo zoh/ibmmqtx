@@ -1,6 +1,7 @@
 package ibmmqtx
 
 import (
+	"bytes"
 	"context"
 	"encoding/hex"
 	"errors"
@@ -56,7 +57,7 @@ RECON:
 	defer qObjDynamic.Close(0)
 
 	// qObjDynamic тут только нужно Name которые обычно совпадает с put очередью
-	msgID, _, err := p.conn.putRequest(qObject, qObjDynamic, msg)
+	msgID, corellationId, err := p.conn.putRequest(qObject, qObjDynamic, msg)
 	if err != nil {
 		if err == ErrConnBroken {
 			p.conn.reqError()
@@ -70,8 +71,15 @@ RECON:
 		return nil, err
 	}
 
-	// провайдер использует correllId из msgId
-	msgTx, err := p.conn.awaitResponse(ctx, qObjDynamic, msgID)
+	var resCmdID []byte
+	if bytes.Equal(corellationId, EmptyCorrelId) {
+		resCmdID = msgID
+	} else {
+		resCmdID = corellationId
+	}
+
+	logger.Debugf("find response by correlID=%x", resCmdID)
+	msgTx, err := p.conn.awaitResponse(ctx, qObjDynamic, resCmdID)
 	if err == ErrConnBroken {
 		p.conn.reqError()
 		if p.cfg.AutoReconnect {

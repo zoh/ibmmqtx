@@ -9,6 +9,7 @@ import (
 	"github.com/zoh/ibmmqtx"
 	"github.com/zoh/ibmmqtx/_examples/config"
 	"testing"
+	"time"
 )
 
 func TestHex(t *testing.T) {
@@ -21,7 +22,9 @@ func TestHex(t *testing.T) {
 func integrationMQClient(t *testing.T) *ibmmqtx.MQPro {
 	cfg := config.GetMqConfig(logrus.TraceLevel)
 
-	c, err := ibmmqtx.Dial(context.Background(), cfg)
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+
+	c, err := ibmmqtx.Dial(ctx, cfg)
 	if err != nil {
 		t.Fatalf("MQ server is not available: %v \n use # source _examples/.env.testing for envirioment variables", err)
 	}
