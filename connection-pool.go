@@ -95,7 +95,7 @@ func (m *mqPool) Get() (*MQPro, error) {
 		select {
 		case <-m.ctx.Done():
 			return nil, m.ctx.Err()
-		// ожидаем пока осводобится
+		// ожидаем пока освободится
 		case m.inWork <- struct{}{}:
 			if m.Size().Available == 0 {
 				m.Logger.Debugf("свободных нет, создаём новый")

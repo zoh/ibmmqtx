@@ -172,13 +172,6 @@ func (p *MQPro) connect(ctx context.Context) (*connection, error) {
 	// Reference the CD structure from the CNO
 	cno.ClientConn = cd
 
-	if env_.KeyRepository != "" {
-		p.log.Println("Key Repository has been specified")
-		sco := ibmmq.NewMQSCO()
-		sco.KeyRepository = env_.KeyRepository
-		cno.SSLConfig = sco
-	}
-
 	// Indicate that we definitely want to use the client connection method.
 	cno.Options = ibmmq.MQCNO_CLIENT_BINDING
 	var attemp int
@@ -203,7 +196,7 @@ func (c *connection) _connectManager() error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 
-	c.log.Traceln("request on connection")
+	c.log.Traceln("request on connection", c.cno.ClientConn.SSLCipherSpec)
 	qMgr, err := ibmmq.Connx(c.env.QManager, c.cno)
 	if err != nil {
 		time.Sleep(c.reconDelay)

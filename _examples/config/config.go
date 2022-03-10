@@ -16,7 +16,7 @@ func GetMqConfig(level logrus.Level) *mqtx.Config {
 			Host:               os.Getenv("MQ_HOST"),
 			Port:               os.Getenv("MQ_PORT"),
 			Channel:            os.Getenv("MQ_CHANNEL"),
-			TLS:                false,
+			TLS:                os.Getenv("MQ_TLS") == "true",
 			LogLevel:           level,
 			WaitGetMsgInterval: 100,
 

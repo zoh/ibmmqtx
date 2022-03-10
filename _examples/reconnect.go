@@ -22,6 +22,11 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
+	go func() {
+		<-signals
+		cancel()
+	}()
+
 	l := logrus.New()
 	l.SetLevel(logrus.TraceLevel)
 
@@ -31,7 +36,6 @@ func main() {
 	}
 
 	var wg sync.WaitGroup
-
 	// запускаем простой пинг
 	wg.Add(1)
 	go func() {
@@ -55,11 +59,6 @@ func main() {
 				logrus.Debugf("Отправили:!!!!!!!!! %x", msgID)
 			}
 		}
-	}()
-
-	go func() {
-		<-signals
-		cancel()
 	}()
 
 	wg.Wait()

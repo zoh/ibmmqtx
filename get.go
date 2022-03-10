@@ -197,7 +197,7 @@ loopCtx:
 		return nil, false, ErrGetMsg
 	}
 
-	l.Info("Success")
+	l.Trace("Success get message")
 
 	ret := &Msg{
 		Payload:  buffer,
