@@ -95,6 +95,7 @@ func (c *connection) browse(ctx context.Context, qObject ibmmq.MQObject, oper qu
 	getmqmd := ibmmq.NewMQMD()
 	gmo := ibmmq.NewMQGMO()
 	cmho := ibmmq.NewMQCMHO()
+	getmqmd.CodedCharSetId = EncodingUTF8
 
 	c.mutex.Lock()
 	// ? почему тут в лок

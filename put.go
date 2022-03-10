@@ -37,6 +37,7 @@ func (c *connection) put(msg *Msg) (MsgID, Tx, error) {
 	putmqmd := ibmmq.NewMQMD()
 	pmo := ibmmq.NewMQPMO()
 	cmho := ibmmq.NewMQCMHO()
+	putmqmd.CodedCharSetId = EncodingUTF8
 
 	// set transaction flag in options.
 	pmo.Options = ibmmq.MQPMO_SYNCPOINT | ibmmq.MQPMO_NEW_MSG_ID
